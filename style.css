@@ -15,18 +15,33 @@
     left: 0;
     translate: 0.625rem 0.625rem;
     color: #030104;
-    background-color: #efe4f7;
+    background-color: #ffffff;
     padding-inline: 0.25rem;
     border: 2px solid transparent;
     pointer-events: none;
-    transition: translate 250ms, background-color 250ms, border-color 250ms;
+    transition: translate 250ms, 
+                background-color 250ms, 
+                border-color 250ms, 
+                border-radius 250ms;
 }
+
 .field:focus-within label, 
 .field:not(:has(:placeholder-shown))
 label {
     translate: 0.625rem -1rem;
     border-color: #030104;
+    background-color: #f5d9d9;
+    border-radius: 2px;
 }
-.field::placeholder {
+
+.field ::placeholder {
     color: transparent;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
