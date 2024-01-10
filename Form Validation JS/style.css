@@ -1,0 +1,61 @@
+.form{
+    padding: 30px 40px;
+}
+
+.form-control{
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.form-control label{
+    display: inline-block; /*inline block is used to display the label and input in the same line*/
+    margin-bottom: 5px;
+}
+
+.form-control input{
+    display: block;
+    border-radius: 4px;
+    border: 2px solid #f0f0f0;
+    font-size: 14px;
+    padding: 10px;
+    width: 100%;
+}
+
+.form-control input:focus{
+    outline: none; /*none or 0px*/
+    border-color: #777;
+}
+
+.form-control.success /*success is a class*/ 
+i.check-circle{
+    color: #2ecc71;
+    visibility: visible;
+}
+.form-control.error i.exc-circle{
+    color: #e74c3c;
+    visibility: visible;
+}
+.form-control small{
+    color: #e74c3c;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    visibility: hidden;
+}
+.form-control.error small{
+    visibility: visible;
+}
+
+.form button{
+    background-color: #8e44ad;
+    border: 2px solid #8e44ad;
+    border-radius: 4px;
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+}

@@ -1,8 +1,14 @@
+
 .box{
     width: 200px;
     height: 100px;
 
     background-color: rgb(255 255 255/5%);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(10px);
+    border-radius: 10px;
 }
+p {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    }
