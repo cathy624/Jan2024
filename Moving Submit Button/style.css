@@ -1,0 +1,18 @@
+.container{
+    width: 31.25em;
+    background-color: aliceblue;
+    padding: 1.4em 3,75em;
+    position: absolute;
+    transform: translate(-50%, -50%); /* This is the line that centers the form */
+    top : 50%;
+    left: 50%;
+    border-radius: 0.7em;
+    box-shadow: 0 0 1em 4em rgba(212, 234, 255, 0.2);
+}
+
+#message_alret{
+    font-size: 0.9em;
+    margin-top: 1.5em;
+    color: aquamarine;
+    visibility: hidden;
+}
