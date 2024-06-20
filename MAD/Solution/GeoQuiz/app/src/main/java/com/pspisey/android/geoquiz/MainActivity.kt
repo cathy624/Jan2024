@@ -1,7 +1,6 @@
-package com.bignerdranch.android.geoquiz
+package com.pspisey.android.geoquiz
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +9,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.bignerdranch.android.geoquiz.databinding.ActivityMainBinding
-import kotlin.math.roundToInt
+import com.pspisey.android.geoquiz.databinding.ActivityMainBinding
 
 private const val TAG = "MainActivity"
 
@@ -109,10 +107,8 @@ class MainActivity : AppCompatActivity() {
             }
             resultLauncher.launch(intent)
         }
-
         updateCheatTokenTextView()
         updateQuestion()
-
     }
     private fun updateQuestion() {
         val questionTextResId = quizViewModel.currentQuestionText
@@ -126,25 +122,42 @@ class MainActivity : AppCompatActivity() {
     }
     fun checkAnswer(userAnswer: Boolean) {
         if (quizViewModel.answeredQuestions[quizViewModel.currentIndex]) {
-            // disableAnswerButtons()
             return // Question already answered correctly
         }
-
         val correctAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = when {
             quizViewModel.isCheater -> R.string.judgment_toast
             userAnswer == correctAnswer -> {
-                quizViewModel.totalScore = +1
+                quizViewModel.totalScore =+ 1
                 R.string.correct_toast
             }
-
             else -> R.string.incorrect_toast
         }
-        quizViewModel.totalAnsweredQuestions  += 1
+        quizViewModel.totalAnsweredQuestions += 1
         quizViewModel.answeredQuestions[quizViewModel.currentIndex] = true
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
 
         disableAnswerButtons()
+
+        // Check if all questions have been answered
+        if (quizViewModel.totalAnsweredQuestions == quizViewModel.questionBank.size) {
+            // All questions have been answered, launch ResultSummaryActivity
+            val intent = Intent(this, ResultSummaryActivity::class.java)
+            startActivity(intent)
+        }
+    }
+    private fun disableAnswerButtons() {
+        binding.trueBtn.isEnabled = false
+        binding.falseBtn.isEnabled = false
+    }
+
+    private fun enableAnswerButtons() {
+        binding.trueBtn.isEnabled = true
+        binding.falseBtn.isEnabled = true
+    }
+
+    private fun updateCheatTokenTextView() {
+        binding.cheatTokenTextView.setText("Your cheat token(s): ${Cheat.countCheatToken}")
     }
         /* Mark the question as answered and disable the buttons
 
@@ -210,21 +223,6 @@ class MainActivity : AppCompatActivity() {
         }*/
         quizViewModel.showScore(context)
     }*/
-
-    private fun disableAnswerButtons() {
-        binding.trueBtn.isEnabled = false
-        binding.falseBtn.isEnabled = false
-    }
-
-    private fun enableAnswerButtons() {
-        binding.trueBtn.isEnabled = true
-        binding.falseBtn.isEnabled = true
-    }
-
-    private fun updateCheatTokenTextView() {
-        binding.cheatTokenTextView.setText("Your cheat token(s): ${Cheat.countCheatToken}")
-    }
-
 
     override fun onStart() {
         super.onStart()

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bignerdranch.android.geoquiz">
+    package="com.pspisey.android.geoquiz">
 
     <application
         android:allowBackup="true"
@@ -9,14 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GeoQuiz">
+
         <activity
-            android:name=".CheatActivity"
+            android:name="com.pspisey.android.geoquiz.CheatActivity"
             android:exported="false" />
         <activity
-            android:name=".ResultSummaryActivity"
-            android:exported="true" />
+            android:name="com.pspisey.android.geoquiz.ResultSummaryActivity"
+            android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.pspisey.android.geoquiz.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

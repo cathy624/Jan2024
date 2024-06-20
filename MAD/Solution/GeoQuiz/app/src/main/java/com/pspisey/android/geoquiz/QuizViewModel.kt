@@ -1,15 +1,11 @@
-package com.bignerdranch.android.geoquiz
+package com.pspisey.android.geoquiz
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import kotlin.math.roundToInt
 
 private const val TAG = "QuizViewModel"
 const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 const val IS_CHEATER_KEY = "IS_CHEATER_KEY"
-
 class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     val questionBank = listOf(
@@ -68,6 +64,7 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
             Cheat.isCheater -> {
                 setUserAnswer(1, true)
                 Cheat.isCheater = false
+                cheatAttempts++
                 R.string.judgment_toast
             }
 

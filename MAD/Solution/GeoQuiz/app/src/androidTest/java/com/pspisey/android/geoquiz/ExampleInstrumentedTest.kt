@@ -1,4 +1,4 @@
-package com.bignerdranch.android.geoquiz
+package com.pspisey.android.geoquiz
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

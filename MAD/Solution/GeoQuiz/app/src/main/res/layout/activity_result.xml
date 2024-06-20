@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.bignerdranch.android.geoquiz.ResultSummaryActivity">
+    tools:context="com.pspisey.android.geoquiz.ResultSummaryActivity">
 
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text=""
+        android:text="Total Answered Questions: @int"
         android:textSize="18sp" />
 
     <TextView

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.geoquiz
+package com.pspisey.android.geoquiz
 
 object Cheat {
     var isCheater = false

@@ -10,7 +10,11 @@
     box-shadow: 0 0 1em 4em rgba(212, 234, 255, 0.2);
 }
 
+<<<<<<< HEAD
 #message_alert{
+=======
+#message-Ref{
+>>>>>>> 96d9ec025cdefe7dd03878e166dc42cba9564c69
     font-size: 0.9em;
     margin-top: 1.5em;
     color: aquamarine;
