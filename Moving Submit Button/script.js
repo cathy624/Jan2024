@@ -1,5 +1,5 @@
-usernameRef.addEventListener('input',  () => {
-    if (!isUsernameValid()) {
+usernameRef.addEventListener('input', () => {
+    if (isUsernameValid()) {
         message_alert.style.visibility = 'hidden';
         usernameRef.style.cssText = 'border-color: red; background-color: #FFB6C1';
     } else {
