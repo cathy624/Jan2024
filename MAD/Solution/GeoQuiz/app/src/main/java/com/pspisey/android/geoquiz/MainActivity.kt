@@ -3,6 +3,7 @@ package com.pspisey.android.geoquiz
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.pspisey.android.geoquiz.databinding.ActivityMainBinding
+import kotlin.math.roundToInt
 
 private const val TAG = "MainActivity"
 
@@ -20,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private val quizViewModel: QuizViewModel by viewModels()
     private val resultViewModel: ResultViewModel by viewModels()
 
+    private lateinit var countDownTimer: CountDownTimer
     private val cheatLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -119,6 +122,24 @@ class MainActivity : AppCompatActivity() {
         } else {
             enableAnswerButtons()
         }
+        // Cancel the current timer (if it's running)
+        if(this::countDownTimer.isInitialized) {
+            countDownTimer.cancel()
+        }
+        // Start a new timer for the current question
+        countDownTimer = object : CountDownTimer(30000, 1000) { // 30 seconds timer
+            override fun onTick(millisUntilFinished: Long) {
+                // Update the UI with the remaining time
+                binding.timer.text = "Time left: ${millisUntilFinished / 1000}"
+            }
+
+            override fun onFinish() {
+                // Time is up for the current question, show a message and move to the next question
+                Toast.makeText(this@MainActivity, "Time's up for this question!", Toast.LENGTH_SHORT).show()
+                quizViewModel.moveToNext()
+                updateQuestion()
+            }
+        }.start()
     }
     fun checkAnswer(userAnswer: Boolean) {
         if (quizViewModel.answeredQuestions[quizViewModel.currentIndex]) {
@@ -128,12 +149,12 @@ class MainActivity : AppCompatActivity() {
         val messageResId = when {
             quizViewModel.isCheater -> R.string.judgment_toast
             userAnswer == correctAnswer -> {
-                quizViewModel.totalScore =+ 1
+                quizViewModel.totalScore++
                 R.string.correct_toast
             }
             else -> R.string.incorrect_toast
         }
-        quizViewModel.totalAnsweredQuestions += 1
+        quizViewModel.totalAnsweredQuestions++
         quizViewModel.answeredQuestions[quizViewModel.currentIndex] = true
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
 
@@ -144,6 +165,8 @@ class MainActivity : AppCompatActivity() {
             // All questions have been answered, launch ResultSummaryActivity
             val intent = Intent(this, ResultSummaryActivity::class.java)
             startActivity(intent)
+            val score = quizViewModel.totalScore.toFloat().div(quizViewModel.totalAnsweredQuestions).times(100).roundToInt()
+            Toast.makeText(this, "Your score $score %", Toast.LENGTH_SHORT).show()
         }
     }
     private fun disableAnswerButtons() {

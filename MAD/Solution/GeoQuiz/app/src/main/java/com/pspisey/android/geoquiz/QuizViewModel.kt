@@ -85,14 +85,14 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
         }
     }
 
-   /*fun checkAnswer(userAnswer: Boolean, context: Context){
+   /*fun checkAnswer(userAnswer: Boolean){
        val correctAnswer = currentQuestionAnswer
        val messageRedId = when {
            isCheater -> "Cheating is wrong!" //will need to change
            userAnswer == correctAnswer -> "You are right! Well done~"
            else -> "Wrong Answer~"
        }
-       Toast.makeText(context, messageRedId, Toast.LENGTH_SHORT).show()
+       Toast.makeText(this, messageRedId, Toast.LENGTH_SHORT).show()
 
        questionBank[currentIndex].userAnswer = userAnswer
        currentAnswers++
@@ -108,16 +108,11 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
 
     fun moveToNext() {
         currentIndex = (currentIndex + 1) % questionBank.size
-        if (currentIndex == 0) //optional
-            reset() ////optional
     }
     fun backToPrev() {
         currentIndex = (currentIndex - 1) % questionBank.size
         if (currentIndex < 0)
             currentIndex += questionBank.size
-        if (currentIndex == 0) //optional
-            reset() ////optional
-        currentIndex
     }
     fun reset() {
         currentIndex = 0
@@ -130,3 +125,8 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
     }
 
 }
+/*if (currentIndex == 0) //optional
+            reset() ////optional
+        currentIndex
+        */
+
