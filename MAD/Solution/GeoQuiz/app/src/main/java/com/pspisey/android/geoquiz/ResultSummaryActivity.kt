@@ -18,8 +18,8 @@ class ResultSummaryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Get the values from the ViewModel
-        val totalQuestionsAnswered = quizViewModel.totalAnsweredQuestions
-        val totalScore = quizViewModel.totalScore
+        val totalQuestionsAnswered = intent.getIntExtra("totalAnsweredQuestions", 0)
+        val totalScore = intent.getIntExtra("totalScore", 0)
         val cheatAttempts = (3 - Cheat.countCheatToken)
 
         // Update the TextViews
@@ -29,6 +29,7 @@ class ResultSummaryActivity : AppCompatActivity() {
 
         binding.okayBtn.setOnClickListener {
             finish()
+            quizViewModel.reset()
         }
     }
     //private fun updateTotalQuestionsAnswered() {

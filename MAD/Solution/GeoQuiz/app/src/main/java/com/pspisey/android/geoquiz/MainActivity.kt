@@ -51,10 +51,10 @@ class MainActivity : AppCompatActivity() {
                 val updatedScore = data?.getIntExtra("updatedTotalScore", 0) ?: 0
                 val updatedCheatAttempts = data?.getIntExtra("updatedTotalCheatAttempts", 0) ?: 0
 
-                // Update your ViewModel or UI with the updated data
+                /* Update your ViewModel or UI with the updated data
                 resultViewModel.updateTotalQuestionsAnswered(updatedQuestionsAnswered)
                 resultViewModel.updateTotalScore(updatedScore)
-                resultViewModel.updateTotalCheatAttempts(updatedCheatAttempts)
+                resultViewModel.updateTotalCheatAttempts(updatedCheatAttempts)*/
             }
         }
 
@@ -100,14 +100,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.resultBtn.setOnClickListener {
-            val intent = Intent(this, ResultSummaryActivity::class.java).apply {
-                putExtra(
-                    "totalQuestionsAnswered",
-                    resultViewModel.totalQuestionsAnswered.value ?: 0
-                )
-                putExtra("totalScore", resultViewModel.totalScore.value ?: 0)
-                putExtra("totalCheatAttempts", resultViewModel.totalCheatAttempts.value ?: 0)
-            }
+            val intent = Intent(this, ResultSummaryActivity::class.java)
+            intent.putExtra("totalScore", quizViewModel.totalScore)
+            intent.putExtra("totalAnsweredQuestions", quizViewModel.answeredQuestions.count { it })
+            intent.putExtra("cheatAttempts", quizViewModel.cheatAttempts)
             resultLauncher.launch(intent)
         }
         updateCheatTokenTextView()
@@ -134,6 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
+                quizViewModel.answeredQuestions[quizViewModel.currentIndex] = true
                 // Time is up for the current question, show a message and move to the next question
                 Toast.makeText(this@MainActivity, "Time's up for this question!", Toast.LENGTH_SHORT).show()
                 quizViewModel.moveToNext()
@@ -164,6 +161,9 @@ class MainActivity : AppCompatActivity() {
         if (quizViewModel.totalAnsweredQuestions == quizViewModel.questionBank.size) {
             // All questions have been answered, launch ResultSummaryActivity
             val intent = Intent(this, ResultSummaryActivity::class.java)
+            intent.putExtra("totalAnsweredQuestions", quizViewModel.totalAnsweredQuestions)
+            intent.putExtra("totalScore", quizViewModel.totalScore)
+            //intent.putExtra("totalAnsweredQuestions", quizViewModel.totalAnsweredQuestions)
             startActivity(intent)
             val score = quizViewModel.totalScore.toFloat().div(quizViewModel.totalAnsweredQuestions).times(100).roundToInt()
             Toast.makeText(this, "Your score $score %", Toast.LENGTH_SHORT).show()
