@@ -1,7 +1,6 @@
 package com.pspisey.android.geoquiz
 
 object Cheat {
-    var isCheater = false
     var countCheatToken = 3
 
     val canCheat: () -> Boolean = {

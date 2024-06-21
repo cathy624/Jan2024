@@ -25,8 +25,8 @@ class CheatActivity : AppCompatActivity() {
 
         binding.showAnswerButton.setOnClickListener {
             val answerText = when {
-                answerIsTrue -> R.string.true_button
-                else -> R.string.false_button
+                answerIsTrue -> R.string.trueBtn
+                else -> R.string.falseBtn
             }
             binding.answerTextView.setText(answerText)
             setAnswerShownResult(true)

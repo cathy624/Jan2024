@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="Total Answered Questions: @int"
+        android:text=""
         android:textSize="18sp" />
 
     <TextView
@@ -37,6 +37,6 @@
         android:id="@+id/okayBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Okay" />
+        android:text="@string/okayBtn" />
 
 </LinearLayout>

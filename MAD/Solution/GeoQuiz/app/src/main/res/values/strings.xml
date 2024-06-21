@@ -1,25 +1,30 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
-    <string name="question_australia">Canberra is the capital of Australia.</string>
-    <string name="question_oceans">The Pacific Ocean is larger than
-        the Atlantic Ocean.</string>
-    <string name="question_mideast">The Suez Canal connects the Red Sea
-        and the Indian Ocean.</string>
-    <string name="question_africa">The source of the Nile River is in Egypt.</string>
-    <string name="question_americas">The Amazon River is the longest river
-        in the Americas.</string>
-    <string name="question_asia">Lake Baikal is the world\'s oldest and deepest
-        freshwater lake.</string>
 
-    <string name="true_button">True</string>
-    <string name="false_button">False</string>
-    <string name="next_button">Next</string>
+    <string name="mount">Mount Everest is located in India.</string>
+    <string name="asia1">The Taj Mahal is located in Bangladesh.</string>
+    <string name="asia2">Russia spans 11 time zones.</string>
+    <string name="america1">The official language of Brazil is Spanish.</string>
+    <string name="america2">Lake Superior, one of the Great Lakes, is located between the borders of Canada and the United States.</string>
+    <string name="europe">Vatican City is the smallest country in the world.</string>
+    <string name="africa1">The Great Pyramid of Giza is located in Mexico.</string>
+    <string name="africa2">Africa is the only continent that is crossed by both the equator and the prime meridian.</string>
+    <string name="oceania1">Sydney is the capital of Australia.</string>
+    <string name="oceania2">New Zealand has more sheep than people.</string>
+
+
+    <string name="trueBtn">True</string>
+    <string name="falseBtn">False</string>
+    <string name="nextBtn">Next &gt;</string>
+    <string name="prevBtn">&lt; Previous</string>
     <string name="correct_toast">Well Done!</string>
     <string name="incorrect_toast">Sorry, Wrong Answer ~.~ </string>
     <string name="warning_text">Are you sure you want to do this?</string>
-    <string name="show_answer_button">Show Answer</string>
-    <string name="cheat_button">Cheat!</string>
+    <string name="show_answer_button">View the Answer</string>
+    <string name="cheatBtn">Cheat!</string>
+    <string name="resetBtn">Reset the Quiz</string>
+    <string name="resultBtn">View Result Summary</string>
     <string name="judgment_toast">Cheating is wrong.</string>
-    <string name="already_answered_toast">Question already answered!</string>
+    <string name="okayBtn">Okay!</string>
 
 </resources>

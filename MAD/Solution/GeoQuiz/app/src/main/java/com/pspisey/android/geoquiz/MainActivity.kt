@@ -18,9 +18,7 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
     private val quizViewModel: QuizViewModel by viewModels()
-    //private val resultViewModel: ResultViewModel by viewModels()
     private lateinit var countDownTimer: CountDownTimer
 
     private val cheatLauncher = registerForActivityResult(
@@ -38,6 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         if (!Cheat.canCheat()) {
             binding.cheatButton.isEnabled = false
+            Toast.makeText(this, "No more cheat tokens", Toast.LENGTH_SHORT).show()
+
         }
     }
 
@@ -46,15 +46,6 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 // Handle any result data
                 val data = result.data // Get the Intent that was returned
-                val updatedQuestionsAnswered =
-                    data?.getIntExtra("updatedTotalQuestionsAnswered", 0) ?: 0
-                val updatedScore = data?.getIntExtra("updatedTotalScore", 0) ?: 0
-                val updatedCheatAttempts = data?.getIntExtra("updatedTotalCheatAttempts", 0) ?: 0
-
-                /* Update your ViewModel or UI with the updated data
-                resultViewModel.updateTotalQuestionsAnswered(updatedQuestionsAnswered)
-                resultViewModel.updateTotalScore(updatedScore)
-                resultViewModel.updateTotalCheatAttempts(updatedCheatAttempts)*/
             }
         }
 
@@ -64,28 +55,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.trueBtn.setOnClickListener { view: View ->
-            checkAnswer(true)
-            disableAnswerButtons()
-        }
-
-        binding.falseBtn.setOnClickListener { view: View ->
-            checkAnswer(false)
-            disableAnswerButtons()
-        }
-
-        binding.nextBtn.setOnClickListener {
-            quizViewModel.moveToNext()
-            updateQuestion()
-            //quizViewModel.isCheater = false
-            //enableAnswerButtons()
-        }
-
-        binding.prevBtn.setOnClickListener {
-            quizViewModel.backToPrev()
-            updateQuestion()
-        }
-
+        //cheat button
         binding.cheatButton.setOnClickListener {
             // Start CheatActivity
             val answerIsTrue = quizViewModel.currentQuestionAnswer
@@ -93,12 +63,18 @@ class MainActivity : AppCompatActivity() {
             cheatLauncher.launch(intent)
         }
 
+        //reset button
+        //serve the purpose which user can reset the selected answers/cheat attempts
+        //BUT not after the quiz has been completed
+        //to prevent cheating
         binding.resetBtn.setOnClickListener {
             quizViewModel.reset()
             updateQuestion()
             updateCheatTokenTextView()
+            updateProgress()
         }
 
+        //check result summary - to check total questions have been answered, correct answers, cheat attempts
         binding.resultBtn.setOnClickListener {
             val intent = Intent(this, ResultSummaryActivity::class.java)
             intent.putExtra("totalScore", quizViewModel.totalScore)
@@ -106,6 +82,34 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("cheatAttempts", quizViewModel.cheatAttempts)
             resultLauncher.launch(intent)
         }
+
+        //answer true to the question
+        binding.trueBtn.setOnClickListener { view: View ->
+            checkAnswer(true)
+            disableAnswerButtons()
+        }
+
+        //answer false to the question
+        binding.falseBtn.setOnClickListener { view: View ->
+            checkAnswer(false)
+            disableAnswerButtons()
+        }
+
+        //next question
+        binding.nextBtn.setOnClickListener {
+            quizViewModel.isCheater = false
+            quizViewModel.moveToNext()
+            updateQuestion()
+            updateProgress()
+
+        }
+
+        //go back to prev question
+        binding.prevBtn.setOnClickListener {
+            quizViewModel.backToPrev()
+            updateQuestion()
+        }
+
         updateCheatTokenTextView()
         updateQuestion()
     }
@@ -123,8 +127,9 @@ class MainActivity : AppCompatActivity() {
             countDownTimer.cancel()
         }
         // Start a new timer for the current question
-        countDownTimer = object : CountDownTimer(10000, 1000) { // 30 seconds timer
+        countDownTimer = object : CountDownTimer(30000, 1000) { // 30 seconds timer
             override fun onTick(millisUntilFinished: Long) {
+
                 // Update the UI with the remaining time
                 binding.timer.text = "Time left: ${millisUntilFinished / 1000}"
             }
@@ -134,34 +139,36 @@ class MainActivity : AppCompatActivity() {
                 quizViewModel.totalAnsweredQuestions++
                 // Time is up for the current question, show a message and move to the next question
                 Toast.makeText(this@MainActivity, "Time's up for this question!", Toast.LENGTH_SHORT).show()
+                //the question is marked as not correct - no score added and the next question will display
                 quizViewModel.moveToNext()
                 updateQuestion()
             }
         }.start()
     }
+
+    //update the progress bar to align with the index of the current question
+    fun updateProgress(){
+        val totalQ = quizViewModel.questionListSize
+        val currentQuestionIndex = quizViewModel.currentIndex
+        val progress = (currentQuestionIndex.toDouble() / totalQ.toDouble())*100
+        binding.progressBar.progress = progress.toInt()
+    }
+
     fun checkAnswer(userAnswer: Boolean) {
         if (quizViewModel.answeredQuestions[quizViewModel.currentIndex]) {
+            updateProgress()
             return // Question already answered correctly
         }
         val correctAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = when {
-            userAnswer == correctAnswer -> {
-                quizViewModel.totalScore++
-                if (userAnswer == quizViewModel.isCheater) {
-                    R.string.judgment_toast
-                } else {
-                    R.string.correct_toast
-                }
-            }
-            else -> R.string.incorrect_toast
-        }
-            /*quizViewModel.isCheater -> R.string.judgment_toast
+            quizViewModel.isCheater -> R.string.judgment_toast
             userAnswer == correctAnswer -> {
                 quizViewModel.totalScore++
                 R.string.correct_toast
             }
             else -> R.string.incorrect_toast
-        }*/
+        }
+
         quizViewModel.totalAnsweredQuestions++
         quizViewModel.answeredQuestions[quizViewModel.currentIndex] = true
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
@@ -169,7 +176,7 @@ class MainActivity : AppCompatActivity() {
         disableAnswerButtons()
 
         // Check if all questions have been answered
-        if (quizViewModel.totalAnsweredQuestions == quizViewModel.questionBank.size) {
+        if (quizViewModel.totalAnsweredQuestions == quizViewModel.questionList.size) {
             // All questions have been answered, launch ResultSummaryActivity
             val intent = Intent(this, ResultSummaryActivity::class.java)
             intent.putExtra("totalAnsweredQuestions", quizViewModel.totalAnsweredQuestions)
@@ -193,71 +200,6 @@ class MainActivity : AppCompatActivity() {
     private fun updateCheatTokenTextView() {
         binding.cheatTokenTextView.setText("Your cheat token(s): ${Cheat.countCheatToken}")
     }
-        /* Mark the question as answered and disable the buttons
-
-        //disableAnswerButtons()
-
-
-        //if (quizViewModel.answeredQuestions[quizViewModel.currentIndex]) {
-        //    disableAnswerButtons()
-        //   return // Question already answered, no further action needed
-        //}
-
-        // Mark the question as answered
-        quizViewModel.totalQuestionsAnswered += 1
-        quizViewModel.answeredQuestions[quizViewModel.currentIndex] = true
-        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
-        disableAnswerButtons()
-        if (quizViewModel.totalQuestionsAnswered == quizViewModel.questionBankSize){
-            // Calculate the percentage score
-            val percentageScore = calcPercentageScore()
-            Toast.makeText(this, "Quiz Completed! Your score: $percentageScore%", Toast.LENGTH_LONG).show()
-
-            // Show the result
-            //val intent = ResultSummaryActivity.newIntent(this, quizViewModel.totalQuestionsAnswered, quizViewModel.totalScore, quizViewModel.totalCheatAttempts)
-            //resultLauncher.launch(intent)
-        }
-        if (quizViewModel.answeredQuestions[quizViewModel.currentIndex]) {
-            disableAnswerButtons()
-            return // Question already answered correctly
-        }
-    }
-    // Function to calculate the percentage score
-    private fun calcPercentageScore() {
-        val score =
-            quizViewModel.totalScore.toFloat().div(quizViewModel.totalQuestionsAnswered).times(100).roundToInt()
-        //val messageResId = "Your score: $score%"
-        //Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
-    }*/
-
-
-
-    /*fun checkAnswer(userAnswer: Boolean, context: Context){
-        val correctAnswer = quizViewModel.currentQuestionAnswer
-        val messageRedId = when {
-            quizViewModel.isCheater -> "Cheating is wrong!" //will need to change
-            userAnswer == correctAnswer -> "Well done!"
-            else -> "Sorry, Wrong Answer"
-        }
-        Toast.makeText(context, messageRedId, Toast.LENGTH_SHORT).show()
-        //quizViewModel.questionBank[quizViewModel.currentIndex].userAnswer = userAnswer
-        if (quizViewModel.answeredQuestions[quizViewModel.currentIndex]) {
-            disableAnswerButtons()
-            return // Question already answered
-        }
-        quizViewModel.totalQuestionsAnswered +=1
-        quizViewModel.answeredQuestions[quizViewModel.currentIndex] = true
-        if (userAnswer == correctAnswer) {
-            quizViewModel.totalScore++
-        }
-
-        /*quizViewModel.currentAnswers++
-        if (userAnswer == correctAnswer) {
-            quizViewModel.currentScore++
-        }*/
-        quizViewModel.showScore(context)
-    }*/
-
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart() called")
@@ -283,40 +225,3 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onDestroy() called")
     }
 }
-    /*private fun showResult() {
-        // Update ResultViewModel with final data
-        resultViewModel.updateTotalQuestionsAnswered(quizViewModel.totalQuestionsAnswered)
-        resultViewModel.updateTotalScore(quizViewModel.totalScore)
-        resultViewModel.updateTotalCheatAttempts(Cheat.countCheatToken)
-        resultLauncher.launch(intent)
-        // Show result to the user (implement this method according to your app's UI design)
-        //Toast.makeText(this, "Quiz Complete! Score: ${quizViewModel.totalScore}", Toast.LENGTH_LONG).show()
-
-        // You can also navigate to a new Activity or Fragment to show detailed results
-        // val intent = Intent(this, ResultActivity::class.java)
-        // startActivity(intent)
-    }*/
-/*private fun checkAnswer(userAnswer: Boolean) {
-       val correctAnswer = quizViewModel.currentQuestionAnswer
-       val messageResId = when {
-           quizViewModel.isCheater -> R.string.judgment_toast
-           userAnswer == correctAnswer -> {
-               quizViewModel.totalScore =+ 1
-               R.string.correct_toast
-           }
-           else -> R.string.incorrect_toast
-       }
-
-       if (quizViewModel.answeredQuestions[quizViewModel.currentIndex]) {
-           disableAnswerButtons()
-           return // Question already answered correctly
-       }
-       quizViewModel.totalQuestionsAnswered +=1
-       quizViewModel.answeredQuestions[quizViewModel.currentIndex] = true
-       Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
-
-       if (quizViewModel.totalQuestionsAnswered == quizViewModel.questionBankSize){
-           //show the result
-           resultLauncher.launch(intent)
-       }
-   }*/
