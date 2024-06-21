@@ -27,7 +27,6 @@ class ResultSummaryActivity : AppCompatActivity() {
 
         binding.okayBtn.setOnClickListener {
             finish()
-            quizViewModel.reset()
         }
     }
 }

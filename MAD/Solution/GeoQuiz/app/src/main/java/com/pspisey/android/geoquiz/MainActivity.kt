@@ -14,7 +14,8 @@ import com.pspisey.android.geoquiz.databinding.ActivityMainBinding
 import kotlin.math.roundToInt
 
 private const val TAG = "MainActivity"
-
+private const val KEY_INDEX = "index"
+private const val IS_CHEATER = "isCheater"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -37,7 +38,6 @@ class MainActivity : AppCompatActivity() {
         if (!Cheat.canCheat()) {
             binding.cheatButton.isEnabled = false
             Toast.makeText(this, "No more cheat tokens", Toast.LENGTH_SHORT).show()
-
         }
     }
 
@@ -54,6 +54,12 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate(Bundle?) called")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val currentIndex = savedInstanceState?.getInt(KEY_INDEX,0)?:0
+        quizViewModel.currentIndex = currentIndex
+
+        quizViewModel.isCheater = savedInstanceState?.getBoolean(IS_CHEATER,false)?:false
+
 
         //cheat button
         binding.cheatButton.setOnClickListener {
@@ -200,6 +206,13 @@ class MainActivity : AppCompatActivity() {
     private fun updateCheatTokenTextView() {
         binding.cheatTokenTextView.setText("Your cheat token(s): ${Cheat.countCheatToken}")
     }
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+        Log.d(TAG,"onSaveInstanceState")
+        savedInstanceState.putInt(KEY_INDEX,quizViewModel.currentIndex)
+        savedInstanceState.putBoolean(IS_CHEATER,quizViewModel.isCheater)
+    }
+
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart() called")
